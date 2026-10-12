@@ -95,6 +95,12 @@ npm run start:dev
 ### Instalação
 
 ```bash
+npm i -g next@latest react@latest react-dom@latest
+```
+
+#### Inicialização
+
+```bash
 npx create-next-app@latest <nome-do-app>
 cd <nome-do-app>
 ```
