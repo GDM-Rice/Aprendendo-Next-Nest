@@ -83,6 +83,11 @@ npx prisma migrate dev
 npx prisma studio
 ```
 
+Ou com algum software como o Insomnia
+```bash
+npm run start:dev
+```
+
 ---
 
 ## Next (Front-end)
