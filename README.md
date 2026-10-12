@@ -33,6 +33,7 @@ cd <nome-do-projeto>
 ```
 
 ### Criando um CRUD de usuário
+Depois utilizamos para criar o CRUID de Tasks
 
 ```bash
 nest g resource user
