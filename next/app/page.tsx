@@ -1,69 +1,125 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+import React, {useState} from 'react';
+import { FaPlusCircle } from 'react-icons/fa';
+
+type Task = {
+  id: number;
+  title: string;
+  description: string;
+  completed: boolean;
+  createdAt: string;
+  updatedAt?: string;
+  expanded?: boolean;
+
+}
+
+export default function TodoList() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+
+  const openAddModal = () => {
+    setNewTitle("");
+    setNewDescription("");
+    setIsModalOpen(true);
+
+  };
+
+  const saveTask = () => {
+    if(!newTitle.trim()) return;
+
+    const currentTime = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  const newTask: Task = {
+    id: tasks.length > 0 ? tasks[tasks.length -1].id + 1: 1,
+    title: newTitle,
+    description: newDescription,
+    completed: false,
+    createdAt: currentTime,
+  };
+
+  setTasks([...tasks, newTask]);
+  setIsModalOpen(false);
+};
+
+  return(
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 p-6">
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+      <h1 className="text-3xl font-bold text-center mb-6 text-indigo-700">
+        Minha To-do List
+      </h1>
+
+      <button
+      onClick = {openAddModal}
+      className="mt-6 w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition-colors shadow-md"
+      >
+        <FaPlusCircle size={18}/>
+        Adicionar tarefa
+      </button>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 relative text-gray-800">
+            <h2 className="text-xl font-semibold text-indigo-700 mb-4 text-center">
+              Nova Tarefa
+            </h2>
+            <input
+            type="text"
+            placeholder="Título"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <textarea
+              placeholder="Descrição"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400"
+              rows={3}
+              />
+
+              <div className="flex justify-between">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                    Cancelar
+                  </button>
+                  <button
+                  onClick={saveTask}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+                  >
+                    Adicionar
+                  </button>
+              </div>
+           </div>
         </div>
-      </main>
+      )}
+
+      <div className="mt-6 space-y-3">
+        {tasks.length === 0 ? (
+          <p className="text-center text-gray-500">Nenhuma tarefa adicionada ainda.</p>
+        ) : (
+            tasks.map((task) => (
+              <div
+                key={task.id}
+                className="bg-indigo-50 p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+              >
+                  <h3 className="font-semibold text-indigo-700">{task.title}</h3>
+                  {task.description && (
+                    <p className="text-gray-600 text-sm mt-1">{task.description}</p>
+                  )}
+                  <p className="text-xs text-gray-400 mt-2"> Criada às {task.createdAt}</p>
+                </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }
